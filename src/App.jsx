@@ -1,35 +1,20 @@
 /**
  * DataPath – Data Analyst → Data Engineer Roadmap Tracker
- * Designed for working professionals with max 3 hours/day.
- *
- * Daily schedule (3 hrs total):
- *   Learn    – 1.5 hrs  (core concept)
- *   Practice – 1 hr     (exercises / drills)
- *   Review   – 30 mins  (notes, flashcards)
- *
- * Mon–Fri = focused learning (3 tasks)
- * Saturday = project / build day (3 tasks, heavier build)
- * Sunday   = rest + light review (2 tasks, optional)
+ * Mobile-responsive redesign with fixed scroll behavior
  */
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
-// ─── CATEGORIES ───────────────────────────────────────────────────
 const CAT = { LEARN: "Learn", PRACTICE: "Practice", BUILD: "Build", REVIEW: "Review" };
 
-// ─── MICRO-HELPERS ────────────────────────────────────────────────
 let _tid = 0;
 const t = (cat, label) => ({ id: `t${++_tid}`, category: cat, label });
 const day = (num, title, tasks) => ({ dayNum: num, title, tasks });
 
-// ─────────────────────────────────────────────────────────────────
-// PHASE 1 – DATA ANALYST (16 WEEKS)
-// ─────────────────────────────────────────────────────────────────
 function makePhase1() {
   let d = 0;
   const nd = () => ++d;
   return [
-    // ── Week 1 – SQL Basics ──────────────────────────────────────
     { id: "w1", label: "Week 1 – SQL Basics", days: [
       day(nd(),"Mon – SELECT & WHERE",    [t(CAT.LEARN,"SELECT, FROM, WHERE, AND/OR — install DBeaver & load sample DB (1.5 hrs)"),t(CAT.PRACTICE,"Write 10 filter queries on Northwind orders table (1 hr)"),t(CAT.REVIEW,"SQL syntax cheatsheet: note every keyword used today (30 mins)")]),
       day(nd(),"Tue – Sorting & DISTINCT",[t(CAT.LEARN,"ORDER BY ASC/DESC, LIMIT/TOP, DISTINCT, column aliases (1.5 hrs)"),t(CAT.PRACTICE,"Top-N queries: highest sales, latest orders, unique customers (1 hr)"),t(CAT.REVIEW,"Flashcard: 5 cards for today's keywords (30 mins)")]),
@@ -39,7 +24,6 @@ function makePhase1() {
       day(nd(),"Sat – Mini Project",      [t(CAT.BUILD,"Load a CSV (e.g. Superstore) into SQLite; answer 5 business questions (1.5 hrs)"),t(CAT.BUILD,"Document queries with comments; write 3-sentence findings (1 hr)"),t(CAT.REVIEW,"Push to GitHub Gist; review any weak areas (30 mins)")]),
       day(nd(),"Sun – Rest Day",          [t(CAT.REVIEW,"Light flashcard review: SQL basics (30 mins)"),t(CAT.REVIEW,"Optional: SQLZoo tutorials — 2 easy exercises (30 mins)")]),
     ]},
-    // ── Week 2 – SQL Joins ───────────────────────────────────────
     { id: "w2", label: "Week 2 – SQL Joins", days: [
       day(nd(),"Mon – INNER JOIN",        [t(CAT.LEARN,"INNER JOIN concept, Venn diagram mental model, ON clause (1.5 hrs)"),t(CAT.PRACTICE,"Join customers + orders; join products + categories (1 hr)"),t(CAT.REVIEW,"Draw JOIN diagram; note what rows are dropped (30 mins)")]),
       day(nd(),"Tue – LEFT JOIN",         [t(CAT.LEARN,"LEFT JOIN keeps all left rows; NULL for no match (1.5 hrs)"),t(CAT.PRACTICE,"Find customers with zero orders using LEFT JOIN + IS NULL (1 hr)"),t(CAT.REVIEW,"INNER vs LEFT JOIN comparison table in notes (30 mins)")]),
@@ -49,7 +33,6 @@ function makePhase1() {
       day(nd(),"Sat – JOIN Project",      [t(CAT.BUILD,"Sales summary report using 3-table JOIN: revenue by rep by category (1.5 hrs)"),t(CAT.BUILD,"Export to CSV; write 3 data insights (1 hr)"),t(CAT.REVIEW,"GitHub push; note any JOIN gaps to revisit (30 mins)")]),
       day(nd(),"Sun – Rest Day",          [t(CAT.REVIEW,"JOIN flashcard review (30 mins)"),t(CAT.REVIEW,"Optional: solve 2 JOIN problems on LeetCode (30 mins)")]),
     ]},
-    // ── Week 3 – Intermediate SQL ────────────────────────────────
     { id: "w3", label: "Week 3 – Intermediate SQL", days: [
       day(nd(),"Mon – Subqueries",        [t(CAT.LEARN,"Subqueries in SELECT, WHERE, FROM; correlated subqueries (1.5 hrs)"),t(CAT.PRACTICE,"Rewrite 3 JOINs as subqueries; find above-average orders (1 hr)"),t(CAT.REVIEW,"When to prefer subquery vs JOIN — pros/cons (30 mins)")]),
       day(nd(),"Tue – CTEs",              [t(CAT.LEARN,"WITH clause (CTE); chaining multiple CTEs; readability (1.5 hrs)"),t(CAT.PRACTICE,"Refactor a nested subquery into a clean CTE chain (1 hr)"),t(CAT.REVIEW,"CTE syntax added to cheatsheet (30 mins)")]),
@@ -59,7 +42,6 @@ function makePhase1() {
       day(nd(),"Sat – Cohort Analysis",   [t(CAT.BUILD,"Monthly cohort: first purchase month + retention using window fns (1.5 hrs)"),t(CAT.BUILD,"Save query + output table; write interpretation (1 hr)"),t(CAT.REVIEW,"GitHub push; this is a strong portfolio query (30 mins)")]),
       day(nd(),"Sun – Rest Day",          [t(CAT.REVIEW,"Window function flashcards (30 mins)"),t(CAT.REVIEW,"Optional: 2 medium SQL on LeetCode / StrataScratch (30 mins)")]),
     ]},
-    // ── Week 4 – SQL Mini Project ────────────────────────────────
     { id: "w4", label: "Week 4 – SQL Mini Project", days: [
       day(nd(),"Mon – Data Cleaning SQL", [t(CAT.LEARN,"NULLIF, ISNULL/COALESCE, CAST, CONVERT, dedup with ROW_NUMBER (1.5 hrs)"),t(CAT.PRACTICE,"Clean a raw Kaggle dataset: nulls, types, duplicates (1 hr)"),t(CAT.REVIEW,"Create a cleaned_data view; document issues found (30 mins)")]),
       day(nd(),"Tue – Project Scoping",   [t(CAT.BUILD,"Choose dataset; define 5 business questions to answer with SQL (1 hr)"),t(CAT.BUILD,"Write data dictionary; inspect row counts & nulls (1 hr)"),t(CAT.REVIEW,"Project brief saved to README draft (30 mins)")]),
@@ -69,7 +51,6 @@ function makePhase1() {
       day(nd(),"Sat – Publish Project",   [t(CAT.BUILD,"GitHub repo: SQL files + README with questions, methods, findings (1.5 hrs)"),t(CAT.BUILD,"Screenshot query results; add to portfolio folder (1 hr)"),t(CAT.REVIEW,"Retrospective: what you'd do differently (30 mins)")]),
       day(nd(),"Sun – Rest Day",          [t(CAT.REVIEW,"Skim Week 5 Power BI setup guide (20 mins)"),t(CAT.REVIEW,"Optional: browse r/SQL for interesting query problems (20 mins)")]),
     ]},
-    // ── Week 5 – Power BI Intro ──────────────────────────────────
     { id: "w5", label: "Week 5 – Power BI Intro", days: [
       day(nd(),"Mon – Power BI Setup",    [t(CAT.LEARN,"Install Power BI Desktop; interface tour: canvas, panes, ribbon (1.5 hrs)"),t(CAT.PRACTICE,"Import your Week 4 CSV; explore in table & data view (1 hr)"),t(CAT.REVIEW,"Power BI UI vocabulary cheatsheet (30 mins)")]),
       day(nd(),"Tue – First Visuals",     [t(CAT.LEARN,"Bar, column, line, pie charts; drill-down levels (1.5 hrs)"),t(CAT.PRACTICE,"Build 3 charts from your dataset: trend + comparison + part-of-whole (1 hr)"),t(CAT.REVIEW,"Screenshot charts; note what story each tells (30 mins)")]),
@@ -79,7 +60,6 @@ function makePhase1() {
       day(nd(),"Sat – First Dashboard",   [t(CAT.BUILD,"Arrange 5 visuals into a single-page dashboard (1.5 hrs)"),t(CAT.BUILD,"Consistent colours, aligned layout, meaningful titles (1 hr)"),t(CAT.REVIEW,"Screenshot; save to portfolio folder (30 mins)")]),
       day(nd(),"Sun – Rest Day",          [t(CAT.REVIEW,"Watch 1 Power BI beginner walkthrough on YouTube (45 mins)"),t(CAT.REVIEW,"Optional: explore Microsoft Learn Power BI path (20 mins)")]),
     ]},
-    // ── Week 6 – Advanced Power BI ──────────────────────────────
     { id: "w6", label: "Week 6 – Advanced Power BI", days: [
       day(nd(),"Mon – Advanced DAX",      [t(CAT.LEARN,"CALCULATE, FILTER, ALL, ALLEXCEPT; context transition explained (1.5 hrs)"),t(CAT.PRACTICE,"YTD Sales, prior year comparison, % of total measures (1 hr)"),t(CAT.REVIEW,"Document each measure with a description comment (30 mins)")]),
       day(nd(),"Tue – KPI Cards",         [t(CAT.LEARN,"Card visual, KPI visual, Gauge; target vs actual patterns (1.5 hrs)"),t(CAT.PRACTICE,"Revenue vs Target KPI card; % Goal achieved gauge (1 hr)"),t(CAT.REVIEW,"When KPI visuals mislead — note the pitfalls (30 mins)")]),
@@ -89,7 +69,6 @@ function makePhase1() {
       day(nd(),"Sat – Advanced Dashboard",[t(CAT.BUILD,"6-visual dashboard with KPIs, drill-through, slicers (1.5 hrs)"),t(CAT.BUILD,"Mobile layout + bookmarks for presentation mode (1 hr)"),t(CAT.REVIEW,"Publish to Power BI Service (free); share link (30 mins)")]),
       day(nd(),"Sun – Rest Day",          [t(CAT.REVIEW,"DAX flashcard review (30 mins)"),t(CAT.REVIEW,"Optional: explore 1 Power BI Community showcase (20 mins)")]),
     ]},
-    // ── Week 7 – Excel Analytics ─────────────────────────────────
     { id: "w7", label: "Week 7 – Excel Analytics", days: [
       day(nd(),"Mon – Pivot Tables",      [t(CAT.LEARN,"PivotTable: rows, columns, values, filters, slicers (1.5 hrs)"),t(CAT.PRACTICE,"Revenue by region × product; drill into sub-categories (1 hr)"),t(CAT.REVIEW,"Pivot table shortcut keys saved (30 mins)")]),
       day(nd(),"Tue – XLOOKUP",           [t(CAT.LEARN,"VLOOKUP limitations; XLOOKUP syntax, match mode, return array (1.5 hrs)"),t(CAT.PRACTICE,"Enrich order table with product details using XLOOKUP (1 hr)"),t(CAT.REVIEW,"VLOOKUP vs XLOOKUP comparison in notes (30 mins)")]),
@@ -99,7 +78,6 @@ function makePhase1() {
       day(nd(),"Sat – Excel Dashboard",   [t(CAT.BUILD,"Single-sheet Excel dashboard: pivot + charts + slicers (1.5 hrs)"),t(CAT.BUILD,"Dynamic title with cell refs; protect sheet; clean layout (1 hr)"),t(CAT.REVIEW,"Save as portfolio artefact (30 mins)")]),
       day(nd(),"Sun – Rest Day",          [t(CAT.REVIEW,"Formula flashcard review (30 mins)"),t(CAT.REVIEW,"Optional: ExcelJet.net — browse 5 new formulas (20 mins)")]),
     ]},
-    // ── Week 8 – Dashboard Projects ─────────────────────────────
     { id: "w8", label: "Week 8 – Dashboard Projects", days: [
       day(nd(),"Mon – Storytelling",      [t(CAT.LEARN,"Cole Nussbaumer Knaflic framework; SCR structure for data (1.5 hrs)"),t(CAT.PRACTICE,"Critique 2 public dashboards: what works, what doesn't (1 hr)"),t(CAT.REVIEW,"Your 5 personal dashboard design rules (30 mins)")]),
       day(nd(),"Tue – Chart Selection",   [t(CAT.LEARN,"Comparison → bar; trend → line; part-of-whole → stacked/treemap (1.5 hrs)"),t(CAT.PRACTICE,"Redesign a confusing chart into a clearer alternative (1 hr)"),t(CAT.REVIEW,"Chart selection decision tree in notes (30 mins)")]),
@@ -109,7 +87,6 @@ function makePhase1() {
       day(nd(),"Sat – Portfolio Polish",  [t(CAT.BUILD,"Choose best dashboard; refine every detail (1.5 hrs)"),t(CAT.BUILD,"200-word project write-up; push to GitHub (1 hr)"),t(CAT.REVIEW,"Week 8 retrospective: Phase 1 halfway done! (30 mins)")]),
       day(nd(),"Sun – Rest Day",          [t(CAT.REVIEW,"Plan weeks 9–10: Advanced SQL + End-to-End Project (20 mins)"),t(CAT.REVIEW,"Optional: Tableau Public browsing for design inspiration (30 mins)")]),
     ]},
-    // ── Week 9 – Advanced SQL ────────────────────────────────────
     { id: "w9", label: "Week 9 – Advanced SQL", days: [
       day(nd(),"Mon – Recursive CTEs",    [t(CAT.LEARN,"Recursive CTE: anchor + recursive member; termination (1.5 hrs)"),t(CAT.PRACTICE,"Generate date spine; walk org hierarchy recursively (1 hr)"),t(CAT.REVIEW,"Trace recursion step-by-step with a small example (30 mins)")]),
       day(nd(),"Tue – Execution Plans",   [t(CAT.LEARN,"EXPLAIN / EXPLAIN ANALYZE; seq scan vs index scan (1.5 hrs)"),t(CAT.PRACTICE,"Profile 3 queries; find the most expensive operation (1 hr)"),t(CAT.REVIEW,"Note where indexes could help (30 mins)")]),
@@ -119,7 +96,6 @@ function makePhase1() {
       day(nd(),"Sat – Performance Lab",   [t(CAT.BUILD,"Load 500K+ row dataset; write 5 optimised queries with indexes (1.5 hrs)"),t(CAT.BUILD,"Document query times + reasoning in README (1 hr)"),t(CAT.REVIEW,"GitHub push (30 mins)")]),
       day(nd(),"Sun – Rest Day",          [t(CAT.REVIEW,"Advanced SQL flashcard review (30 mins)"),t(CAT.REVIEW,"Optional: watch query optimisation video (45 mins)")]),
     ]},
-    // ── Week 10 – End-to-End Project ─────────────────────────────
     { id: "w10", label: "Week 10 – End-to-End Project", days: [
       day(nd(),"Mon – Project Setup",     [t(CAT.BUILD,"Pick dataset; define 5 questions; load to SQLite; first inspect (1.5 hrs)"),t(CAT.BUILD,"Data dictionary; row counts; null audit (1 hr)"),t(CAT.REVIEW,"Project brief in README draft (30 mins)")]),
       day(nd(),"Tue – Data Cleaning",     [t(CAT.BUILD,"SQL: fix nulls, duplicates, wrong types; CREATE VIEW cleaned_data (1.5 hrs)"),t(CAT.BUILD,"Log all cleaning decisions in a comment block (1 hr)"),t(CAT.REVIEW,"Is data now trustworthy? Sanity checks (30 mins)")]),
@@ -129,7 +105,6 @@ function makePhase1() {
       day(nd(),"Sat – Publish",           [t(CAT.BUILD,"GitHub: SQL + pbix + README + findings PDF (1.5 hrs)"),t(CAT.BUILD,"Record 3-min Loom walkthrough; embed in README (1 hr)"),t(CAT.REVIEW,"Share on LinkedIn (optional but recommended!) (30 mins)")]),
       day(nd(),"Sun – Rest Day",          [t(CAT.REVIEW,"Reflect: what you're proud of + what to improve (20 mins)"),t(CAT.REVIEW,"Optional: plan storytelling week (15 mins)")]),
     ]},
-    // ── Week 11 – Storytelling ───────────────────────────────────
     { id: "w11", label: "Week 11 – Data Storytelling", days: [
       day(nd(),"Mon – SCR Framework",     [t(CAT.LEARN,"Situation–Complication–Resolution for data presentations (1.5 hrs)"),t(CAT.PRACTICE,"Rewrite Week 10 findings using SCR structure (1 hr)"),t(CAT.REVIEW,"3 components of every data story — memorised (30 mins)")]),
       day(nd(),"Tue – Audience Targeting",[t(CAT.LEARN,"Adjusting depth: executive vs analyst vs engineer audience (1.5 hrs)"),t(CAT.PRACTICE,"Rewrite same insight for CEO vs data team (1 hr)"),t(CAT.REVIEW,"Pre-presentation checklist (30 mins)")]),
@@ -139,7 +114,6 @@ function makePhase1() {
       day(nd(),"Sat – Storytelling Project",[t(CAT.BUILD,"New dashboard on fresh dataset — storytelling-first approach (1.5 hrs)"),t(CAT.BUILD,"Insight headlines + written recommendation section (1 hr)"),t(CAT.REVIEW,"Add to portfolio (30 mins)")]),
       day(nd(),"Sun – Rest Day",          [t(CAT.REVIEW,"Read 1 data journalism article: FiveThirtyEight or The Pudding (30 mins)"),t(CAT.REVIEW,"Note 2 techniques you want to steal (10 mins)")]),
     ]},
-    // ── Week 12 – Portfolio ──────────────────────────────────────
     { id: "w12", label: "Week 12 – Portfolio Building", days: [
       day(nd(),"Mon – GitHub Profile",    [t(CAT.BUILD,"Tidy GitHub: profile README, bio, location, pinned repos (1.5 hrs)"),t(CAT.BUILD,"README template for data projects written (1 hr)"),t(CAT.REVIEW,"Review 3 strong analyst GitHub profiles for inspiration (30 mins)")]),
       day(nd(),"Tue – SQL Project Docs",  [t(CAT.BUILD,"README for SQL project: problem, method, queries, findings (1.5 hrs)"),t(CAT.BUILD,"Schema diagram + sample output screenshots added (1 hr)"),t(CAT.REVIEW,"Is it clear to someone with zero context? (30 mins)")]),
@@ -149,7 +123,6 @@ function makePhase1() {
       day(nd(),"Sat – Portfolio Review",  [t(CAT.BUILD,"Full audit: consistency, quality, 3 projects minimum (1.5 hrs)"),t(CAT.BUILD,"Add a 3rd project if needed (1 hr)"),t(CAT.REVIEW,"Peer feedback or self-grade (30 mins)")]),
       day(nd(),"Sun – Rest Day",          [t(CAT.REVIEW,"Read job descriptions; note top skills required (30 mins)"),t(CAT.REVIEW,"Optional: career advice video for data analysts (20 mins)")]),
     ]},
-    // ── Week 13 – Job Applications ───────────────────────────────
     { id: "w13", label: "Week 13 – Job Applications", days: [
       day(nd(),"Mon – CV/Resume",         [t(CAT.BUILD,"1-page data analyst CV: action verbs, metrics, ATS-friendly (1.5 hrs)"),t(CAT.BUILD,"Tailor to a specific real job description (1 hr)"),t(CAT.REVIEW,"CV checklist: no photo, quantified achievements, clean format (30 mins)")]),
       day(nd(),"Tue – Cover Letter",      [t(CAT.BUILD,"Cover letter template: opening hook + project proof + close (1 hr)"),t(CAT.BUILD,"Customise for 2 specific job applications (1 hr)"),t(CAT.REVIEW,"Proofread; replace every generic phrase (30 mins)")]),
@@ -159,7 +132,6 @@ function makePhase1() {
       day(nd(),"Sat – Portfolio + Apply", [t(CAT.BUILD,"Fix any portfolio gaps based on JD research (1.5 hrs)"),t(CAT.BUILD,"Apply to 3 more roles (1 hr)"),t(CAT.REVIEW,"Improve LinkedIn based on what's working (30 mins)")]),
       day(nd(),"Sun – Rest Day",          [t(CAT.REVIEW,"Review application tracker status (15 mins)"),t(CAT.REVIEW,"Optional: practice 'Tell me about yourself' answer aloud (20 mins)")]),
     ]},
-    // ── Week 14 – Interview Prep I ───────────────────────────────
     { id: "w14", label: "Week 14 – Interview Prep I", days: [
       day(nd(),"Mon – Easy SQL Qs",       [t(CAT.PRACTICE,"5 easy SQL interview questions on StrataScratch — timed (1.5 hrs)"),t(CAT.PRACTICE,"Clean up solutions; add comments explaining logic (1 hr)"),t(CAT.REVIEW,"Patterns noted: GROUP BY + HAVING is most common (30 mins)")]),
       day(nd(),"Tue – Medium SQL Qs",     [t(CAT.PRACTICE,"5 medium LeetCode SQL problems (1.5 hrs)"),t(CAT.PRACTICE,"Review optimal solutions; understand why yours differs (1 hr)"),t(CAT.REVIEW,"Add tricky patterns to flashcards (30 mins)")]),
@@ -169,7 +141,6 @@ function makePhase1() {
       day(nd(),"Sat – Mock Interview",    [t(CAT.PRACTICE,"Record full mock: 10 SQL + 5 behavioural questions (1.5 hrs)"),t(CAT.REVIEW,"Watch recording; 3 specific improvements identified (1 hr)"),t(CAT.BUILD,"Apply to 3 more roles (30 mins)")]),
       day(nd(),"Sun – Rest Day",          [t(CAT.REVIEW,"Light SQL flashcard review (20 mins)"),t(CAT.REVIEW,"Optional: research the company you're interviewing with (30 mins)")]),
     ]},
-    // ── Week 15 – Interview Prep II ──────────────────────────────
     { id: "w15", label: "Week 15 – Interview Prep II", days: [
       day(nd(),"Mon – Hard SQL Qs",       [t(CAT.PRACTICE,"5 hard SQL problems: window functions + CTEs (timed) (1.5 hrs)"),t(CAT.PRACTICE,"Review & understand every solution fully (1 hr)"),t(CAT.REVIEW,"Flashcard update with new patterns (30 mins)")]),
       day(nd(),"Tue – Stats Basics",      [t(CAT.LEARN,"Mean, median, percentiles, std deviation, outliers (1.5 hrs)"),t(CAT.PRACTICE,"Calculate descriptive stats in SQL on a real dataset (1 hr)"),t(CAT.REVIEW,"Stats cheatsheet: interview-ready definitions (30 mins)")]),
@@ -179,7 +150,6 @@ function makePhase1() {
       day(nd(),"Sat – Weak Spots Sprint", [t(CAT.PRACTICE,"Deep-dive your #1 weak area from yesterday's mock (1.5 hrs)"),t(CAT.BUILD,"Apply to 5 more roles with tailored CVs (1 hr)"),t(CAT.REVIEW,"Application tracker update (30 mins)")]),
       day(nd(),"Sun – Rest Day",          [t(CAT.REVIEW,"Company research template for upcoming interviews (20 mins)"),t(CAT.REVIEW,"Optional: data analyst career blog post (20 mins)")]),
     ]},
-    // ── Week 16 – Final Push ─────────────────────────────────────
     { id: "w16", label: "Week 16 – Final Push", days: [
       day(nd(),"Mon – SQL Final Test",    [t(CAT.PRACTICE,"Timed SQL test: 10 questions, 45 minutes, no help (1.5 hrs)"),t(CAT.REVIEW,"Grade every answer; review wrong ones deeply (1 hr)"),t(CAT.REVIEW,"Final flashcard round (30 mins)")]),
       day(nd(),"Tue – Portfolio Final",   [t(CAT.BUILD,"Final portfolio audit: all links work, screenshots clear (1.5 hrs)"),t(CAT.BUILD,"LinkedIn: latest portfolio projects added; headline updated (1 hr)"),t(CAT.REVIEW,"Ask someone to review and give honest feedback (30 mins)")]),
@@ -192,12 +162,9 @@ function makePhase1() {
   ];
 }
 
-// ─────────────────────────────────────────────────────────────────
-// PHASE 2 – DATA ENGINEERING (12 MONTHS)
-// ─────────────────────────────────────────────────────────────────
 function makePhase2() {
   return [
-    { id:"p2m1",  label:"Month 1 – Python Basics", days:[
+    { id:"p2m1", label:"Month 1 – Python Basics", days:[
       day(113,"Mon – Python Setup",      [t(CAT.LEARN,"Install Python + VS Code; variables, types, print(), f-strings (1.5 hrs)"),t(CAT.PRACTICE,"10 small scripts: maths, strings, conditionals (1 hr)"),t(CAT.REVIEW,"Python vs SQL syntax differences cheatsheet (30 mins)")]),
       day(114,"Tue – Loops & Functions", [t(CAT.LEARN,"for/while loops; def functions; return; *args/**kwargs (1.5 hrs)"),t(CAT.PRACTICE,"FizzBuzz; 5 reusable functions: clean_text, calc_tax, etc. (1 hr)"),t(CAT.REVIEW,"Function design principles noted (30 mins)")]),
       day(115,"Wed – Lists & Dicts",     [t(CAT.LEARN,"Lists, dicts, sets, tuples; list comprehensions (1.5 hrs)"),t(CAT.PRACTICE,"Process a list of sales records with comprehensions (1 hr)"),t(CAT.REVIEW,"Data structure cheatsheet (30 mins)")]),
@@ -206,7 +173,7 @@ function makePhase2() {
       day(118,"Sat – Pandas Intro",      [t(CAT.BUILD,"Install pandas; read_csv, head, info, describe, dtypes (1.5 hrs)"),t(CAT.BUILD,"Explore a Kaggle dataset: shape, nulls, value_counts (1 hr)"),t(CAT.REVIEW,"DataFrame ≈ SQL table — compare in notes (30 mins)")]),
       day(119,"Sun – Rest & Review",     [t(CAT.REVIEW,"Python flashcard review (30 mins)"),t(CAT.REVIEW,"Optional: Python for Everybody — 1 chapter (45 mins)")]),
     ]},
-    { id:"p2m2",  label:"Month 2 – Advanced Pandas", days:[
+    { id:"p2m2", label:"Month 2 – Advanced Pandas", days:[
       day(120,"Mon – Pandas Filtering",  [t(CAT.LEARN,"Boolean indexing, .loc[], .iloc[], .query() (1.5 hrs)"),t(CAT.PRACTICE,"Filter 100K row dataset: multiple conditions, ranges (1 hr)"),t(CAT.REVIEW,"Pandas filter vs SQL WHERE (30 mins)")]),
       day(121,"Tue – GroupBy & Agg",     [t(CAT.LEARN,"groupby().agg(); named aggregations; transform(); apply() (1.5 hrs)"),t(CAT.PRACTICE,"Revenue by region, avg order per customer, top-5 products (1 hr)"),t(CAT.REVIEW,"GroupBy vs SQL GROUP BY comparison (30 mins)")]),
       day(122,"Wed – Merge & Concat",    [t(CAT.LEARN,"pd.merge() with how; pd.concat(); handling duplicate columns (1.5 hrs)"),t(CAT.PRACTICE,"Join 3 DataFrames: orders + customers + products (1 hr)"),t(CAT.REVIEW,"Merge vs SQL JOIN comparison table (30 mins)")]),
@@ -215,7 +182,7 @@ function makePhase2() {
       day(125,"Sat – Pandas Project",    [t(CAT.BUILD,"End-to-end: ingest CSV → clean → analyse → export (1.5 hrs)"),t(CAT.BUILD,"Jupyter notebook pushed to GitHub with README (1 hr)"),t(CAT.REVIEW,"Note: this is your first Python portfolio project (30 mins)")]),
       day(126,"Sun – Rest & Review",     [t(CAT.REVIEW,"Pandas flashcard review (30 mins)"),t(CAT.REVIEW,"Optional: NumPy array basics — 1 short tutorial (30 mins)")]),
     ]},
-    { id:"p2m3",  label:"Month 3 – SQL + Python", days:[
+    { id:"p2m3", label:"Month 3 – SQL + Python", days:[
       day(127,"Mon – SQLAlchemy",        [t(CAT.LEARN,"create_engine(); connect to SQLite + Postgres (1.5 hrs)"),t(CAT.PRACTICE,"Run SELECT queries from Python; load results to DataFrame (1 hr)"),t(CAT.REVIEW,"Python ↔ DB data flow diagram (30 mins)")]),
       day(128,"Tue – pd.read_sql",       [t(CAT.LEARN,"pd.read_sql(); parameterised queries; SQL injection risks (1.5 hrs)"),t(CAT.PRACTICE,"Function that takes params + returns filtered DataFrame (1 hr)"),t(CAT.REVIEW,"Parameterised query pattern saved (30 mins)")]),
       day(129,"Wed – Writing to DB",     [t(CAT.LEARN,"df.to_sql(); if_exists replace/append; dtype mapping (1.5 hrs)"),t(CAT.PRACTICE,"Clean CSV in Pandas → write result to Postgres table (1 hr)"),t(CAT.REVIEW,"Note upsert patterns for ETL (30 mins)")]),
@@ -224,7 +191,7 @@ function makePhase2() {
       day(132,"Sat – SQL+Python Project",[t(CAT.BUILD,"Python: query DB → clean → save report CSV (1.5 hrs)"),t(CAT.BUILD,"GitHub push + usage README (1 hr)"),t(CAT.REVIEW,"Reflect: this is your first mini-pipeline! (30 mins)")]),
       day(133,"Sun – Rest & Review",     [t(CAT.REVIEW,"SQL + Python flashcard review (30 mins)"),t(CAT.REVIEW,"Optional: read about ETL design patterns (30 mins)")]),
     ]},
-    { id:"p2m4",  label:"Month 4 – ETL Foundations", days:[
+    { id:"p2m4", label:"Month 4 – ETL Foundations", days:[
       day(134,"Mon – ETL Concepts",      [t(CAT.LEARN,"ETL vs ELT; batch vs streaming; pipeline architecture patterns (1.5 hrs)"),t(CAT.PRACTICE,"Diagram your Phase 1 SQL project as an ETL pipeline (1 hr)"),t(CAT.REVIEW,"ETL vocabulary: source, sink, transform, lineage (30 mins)")]),
       day(135,"Tue – Extract Layer",     [t(CAT.LEARN,"Extract from CSV, JSON, REST API, database (1.5 hrs)"),t(CAT.PRACTICE,"Write extractors for 3 sources: CSV + JSON + public API (1 hr)"),t(CAT.REVIEW,"Error handling: what if source is unavailable? (30 mins)")]),
       day(136,"Wed – Transform Layer",   [t(CAT.LEARN,"Validation, type casting, business rules, normalisation (1.5 hrs)"),t(CAT.PRACTICE,"transform() function with 5 cleaning + enrichment rules (1 hr)"),t(CAT.REVIEW,"Idempotency: transformations must be re-runnable (30 mins)")]),
@@ -233,7 +200,7 @@ function makePhase2() {
       day(139,"Sat – ETL Project",       [t(CAT.BUILD,"Complete ETL: CSV → transform → SQLite with logging (1.5 hrs)"),t(CAT.BUILD,"Config file; error handling; GitHub push (1 hr)"),t(CAT.REVIEW,"README: how to run, what it does (30 mins)")]),
       day(140,"Sun – Rest & Review",     [t(CAT.REVIEW,"ETL concepts flashcard review (30 mins)"),t(CAT.REVIEW,"Optional: read Airflow intro docs (30 mins)")]),
     ]},
-    { id:"p2m5",  label:"Month 5 – Apache Airflow", days:[
+    { id:"p2m5", label:"Month 5 – Apache Airflow", days:[
       day(141,"Mon – Airflow Concepts",  [t(CAT.LEARN,"DAGs, tasks, operators, scheduler, executor — mental model (1.5 hrs)"),t(CAT.PRACTICE,"Install Airflow with Docker; open UI; explore example DAGs (1 hr)"),t(CAT.REVIEW,"Airflow vocabulary cheatsheet (30 mins)")]),
       day(142,"Tue – First DAG",         [t(CAT.LEARN,"Write DAG with PythonOperator: 3 sequential tasks (1.5 hrs)"),t(CAT.PRACTICE,"Trigger DAG manually; view task logs (1 hr)"),t(CAT.REVIEW,"DAG anatomy: connections in notes (30 mins)")]),
       day(143,"Wed – Scheduling",        [t(CAT.LEARN,"cron expressions; @daily/@hourly; backfill concept (1.5 hrs)"),t(CAT.PRACTICE,"Schedule ETL DAG to run nightly; test backfill (1 hr)"),t(CAT.REVIEW,"Cron expression cheatsheet (30 mins)")]),
@@ -242,7 +209,7 @@ function makePhase2() {
       day(146,"Sat – Airflow Pipeline",  [t(CAT.BUILD,"Migrate Month 4 ETL into proper Airflow DAG (1.5 hrs)"),t(CAT.BUILD,"Schedule + retry + alert configured; GitHub push (1 hr)"),t(CAT.REVIEW,"Document the DAG (30 mins)")]),
       day(147,"Sun – Rest & Review",     [t(CAT.REVIEW,"Airflow flashcard review (30 mins)"),t(CAT.REVIEW,"Optional: watch Airflow tutorial video (45 mins)")]),
     ]},
-    { id:"p2m6",  label:"Month 6 – APIs & Ingestion", days:[
+    { id:"p2m6", label:"Month 6 – APIs & Ingestion", days:[
       day(148,"Mon – REST API Basics",   [t(CAT.LEARN,"HTTP methods, status codes, headers, JSON response structure (1.5 hrs)"),t(CAT.PRACTICE,"Call OpenWeather or CoinGecko API with requests library (1 hr)"),t(CAT.REVIEW,"API response fields you'd store in a DB (30 mins)")]),
       day(149,"Tue – Pagination",        [t(CAT.LEARN,"Page-based vs cursor pagination; rate limits; backoff (1.5 hrs)"),t(CAT.PRACTICE,"Paginate all results from an API into a list (1 hr)"),t(CAT.REVIEW,"Rate limit pattern: time.sleep() + retry (30 mins)")]),
       day(150,"Wed – Auth & Secrets",    [t(CAT.LEARN,"API key auth; OAuth 2.0 flow; .env + python-dotenv (1.5 hrs)"),t(CAT.PRACTICE,"Authenticate to protected API; secrets in .env file only (1 hr)"),t(CAT.REVIEW,"Never hardcode secrets — rule written in bold (30 mins)")]),
@@ -251,7 +218,7 @@ function makePhase2() {
       day(153,"Sat – API Pipeline",      [t(CAT.BUILD,"Airflow DAG: pull API daily → process → load to DB (1.5 hrs)"),t(CAT.BUILD,"Handle errors, retries, duplicates; GitHub push (1 hr)"),t(CAT.REVIEW,"README + architecture notes (30 mins)")]),
       day(154,"Sun – Rest & Review",     [t(CAT.REVIEW,"API patterns flashcard review (30 mins)"),t(CAT.REVIEW,"Optional: explore a new public API documentation (30 mins)")]),
     ]},
-    { id:"p2m7",  label:"Month 7 – AWS S3 & IAM", days:[
+    { id:"p2m7", label:"Month 7 – AWS S3 & IAM", days:[
       day(155,"Mon – AWS Account",       [t(CAT.LEARN,"Free-tier AWS account; console tour; set billing alert (1.5 hrs)"),t(CAT.PRACTICE,"Create S3 bucket; upload + download a file manually (1 hr)"),t(CAT.REVIEW,"AWS regions, AZs, global infrastructure basics (30 mins)")]),
       day(156,"Tue – S3 Deep Dive",      [t(CAT.LEARN,"Storage classes; versioning; lifecycle policies; bucket policy JSON (1.5 hrs)"),t(CAT.PRACTICE,"Enable versioning; create lifecycle rule → Glacier after 90 days (1 hr)"),t(CAT.REVIEW,"S3 cost optimisation tips (30 mins)")]),
       day(157,"Wed – IAM",               [t(CAT.LEARN,"Users, groups, roles, policies; least privilege principle (1.5 hrs)"),t(CAT.PRACTICE,"Create IAM role with S3 read-only policy; test access (1 hr)"),t(CAT.REVIEW,"IAM security best practices checklist (30 mins)")]),
@@ -260,7 +227,7 @@ function makePhase2() {
       day(160,"Sat – S3 Pipeline",       [t(CAT.BUILD,"Airflow: API pull → process → upload to S3 with partitions (1.5 hrs)"),t(CAT.BUILD,"Handle overwrites; GitHub + architecture diagram (1 hr)"),t(CAT.REVIEW,"Update portfolio README (30 mins)")]),
       day(161,"Sun – Rest & Review",     [t(CAT.REVIEW,"AWS flashcard review (30 mins)"),t(CAT.REVIEW,"Optional: AWS free-tier documentation (20 mins)")]),
     ]},
-    { id:"p2m8",  label:"Month 8 – Lambda & RDS", days:[
+    { id:"p2m8", label:"Month 8 – Lambda & RDS", days:[
       day(162,"Mon – Lambda Concepts",   [t(CAT.LEARN,"Serverless; Lambda: triggers, runtime, memory, timeout limits (1.5 hrs)"),t(CAT.PRACTICE,"Hello World Lambda in AWS console (Python 3.x runtime) (1 hr)"),t(CAT.REVIEW,"Lambda vs EC2: when to use each (30 mins)")]),
       day(163,"Tue – Lambda Triggers",   [t(CAT.LEARN,"S3 event trigger; API Gateway; CloudWatch scheduled rule (1.5 hrs)"),t(CAT.PRACTICE,"S3 trigger: Lambda fires when file uploaded to bucket (1 hr)"),t(CAT.REVIEW,"Event-driven architecture basics (30 mins)")]),
       day(164,"Wed – Lambda + Python",   [t(CAT.LEARN,"Packaging dependencies; Lambda layers; environment variables (1.5 hrs)"),t(CAT.PRACTICE,"Lambda: read S3 file → Pandas transform → save output (1 hr)"),t(CAT.REVIEW,"Cold start + timeout best practices (30 mins)")]),
@@ -269,7 +236,7 @@ function makePhase2() {
       day(167,"Sat – Serverless Project",[t(CAT.BUILD,"Full serverless pipeline: S3 upload → Lambda → RDS (1.5 hrs)"),t(CAT.BUILD,"CloudWatch logs; test with real data; architecture diagram (1 hr)"),t(CAT.REVIEW,"GitHub push + README (30 mins)")]),
       day(168,"Sun – Rest & Review",     [t(CAT.REVIEW,"Lambda + RDS flashcard review (30 mins)"),t(CAT.REVIEW,"Optional: AWS Lambda pricing calculator (20 mins)")]),
     ]},
-    { id:"p2m9",  label:"Month 9 – Glue & Athena", days:[
+    { id:"p2m9", label:"Month 9 – Glue & Athena", days:[
       day(169,"Mon – Glue Concepts",     [t(CAT.LEARN,"Glue: crawlers, Data Catalog, ETL jobs, Glue Studio (1.5 hrs)"),t(CAT.PRACTICE,"Run Glue crawler on S3 bucket to auto-detect schema (1 hr)"),t(CAT.REVIEW,"Glue Catalog = managed Hive metastore (30 mins)")]),
       day(170,"Tue – Glue ETL Jobs",     [t(CAT.LEARN,"Glue ETL: PySpark vs Python shell; DynamicFrame vs DataFrame (1.5 hrs)"),t(CAT.PRACTICE,"Glue job: read CSV from S3, transform, write Parquet (1 hr)"),t(CAT.REVIEW,"Parquet benefits vs CSV (30 mins)")]),
       day(171,"Wed – Amazon Athena",     [t(CAT.LEARN,"Athena: serverless SQL over S3; pricing per TB scanned (1.5 hrs)"),t(CAT.PRACTICE,"Query Parquet files with Athena SQL (1 hr)"),t(CAT.REVIEW,"Optimise Athena: partition pruning + columnar format (30 mins)")]),
@@ -308,11 +275,10 @@ function makePhase2() {
   ];
 }
 
-// ─── ASSEMBLE ROADMAP ─────────────────────────────────────────────
 const roadmapData = {
   phases: [
-    { id:"phase1", label:"Phase 1: Data Analyst",   shortLabel:"Analyst",  duration:"16 Weeks", color:"indigo", weeks:makePhase1() },
-    { id:"phase2", label:"Phase 2: Data Engineer",  shortLabel:"Engineer", duration:"12 Months", color:"emerald", weeks:makePhase2() },
+    { id:"phase1", label:"Phase 1: Data Analyst",  shortLabel:"Analyst",  duration:"16 Weeks",  color:"indigo",  weeks:makePhase1() },
+    { id:"phase2", label:"Phase 2: Data Engineer", shortLabel:"Engineer", duration:"12 Months", color:"emerald", weeks:makePhase2() },
   ],
 };
 
@@ -335,18 +301,9 @@ const calcStats = (tasks, progress) => {
   const total = tasks.length, done = tasks.filter(t=>progress[t.id]).length;
   return { total, done, pct: total ? Math.round(done/total*100) : 0 };
 };
-const weekStats = (week, progress) => {
-  const tasks = week.days.flatMap(d=>d.tasks);
-  return calcStats(tasks, progress);
-};
-const phaseStats = (phase, progress) => {
-  const tasks = phase.weeks.flatMap(w=>w.days.flatMap(d=>d.tasks));
-  return calcStats(tasks, progress);
-};
-const overallStats = (progress) => {
-  const tasks = roadmapData.phases.flatMap(p=>p.weeks.flatMap(w=>w.days.flatMap(d=>d.tasks)));
-  return calcStats(tasks, progress);
-};
+const weekStats  = (week,  progress) => calcStats(week.days.flatMap(d=>d.tasks), progress);
+const phaseStats = (phase, progress) => calcStats(phase.weeks.flatMap(w=>w.days.flatMap(d=>d.tasks)), progress);
+const overallStats = (progress) => calcStats(roadmapData.phases.flatMap(p=>p.weeks.flatMap(w=>w.days.flatMap(d=>d.tasks))), progress);
 
 // ─── UI COMPONENTS ───────────────────────────────────────────────
 function ProgressBar({ pct, color="indigo", size="md" }) {
@@ -411,20 +368,47 @@ function DayCard({ day, progress, toggleTask }) {
   );
 }
 
-function Sidebar({ activePhaseId, activeWeekId, onSelectWeek, progress, onReset }) {
-  const [expanded, setExpanded] = useState(activePhaseId);
+// ─── MOBILE DRAWER ───────────────────────────────────────────────
+function MobileDrawer({ open, onClose, children }) {
+  useEffect(() => {
+    if (open) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = '';
+    return () => { document.body.style.overflow = ''; };
+  }, [open]);
+  if (!open) return null;
   return (
-    <aside className="flex-shrink-0 bg-white border-r border-gray-100 flex flex-col h-screen sticky top-0 overflow-hidden" style={{width:272}}>
-      <div className="px-5 py-5 border-b border-gray-100">
+    <div className="fixed inset-0 z-50 flex">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose}/>
+      <div className="relative w-72 max-w-[85vw] bg-white h-full flex flex-col shadow-2xl overflow-hidden">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ─── SIDEBAR CONTENT ─────────────────────────────────────────────
+function SidebarContent({ activePhaseId, activeWeekId, onSelectWeek, progress, onReset, onClose }) {
+  const [expanded, setExpanded] = useState(activePhaseId);
+
+  return (
+    <>
+      {/* Header */}
+      <div className="px-5 py-5 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow">
             <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
           </div>
           <div><h1 className="text-sm font-bold text-gray-900 leading-none">DataPath</h1><p className="text-xs text-gray-400 mt-0.5">3 hrs/day · built for working pros</p></div>
         </div>
+        {onClose && (
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors">
+            <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        )}
       </div>
 
-      <div className="px-5 py-4 border-b border-gray-50">
+      {/* Overall progress */}
+      <div className="px-5 py-4 border-b border-gray-50 flex-shrink-0">
         {(()=>{const s=overallStats(progress);return(<>
           <div className="flex justify-between mb-1.5"><span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Overall</span><span className="text-sm font-bold text-gray-900">{s.pct}%</span></div>
           <ProgressBar pct={s.pct} color="indigo" size="md"/>
@@ -432,10 +416,12 @@ function Sidebar({ activePhaseId, activeWeekId, onSelectWeek, progress, onReset 
         </>)})()}
       </div>
 
-      <div className="mx-3 my-2 bg-blue-50 rounded-xl px-3 py-2.5">
+      {/* Schedule tip */}
+      <div className="mx-3 my-2 bg-blue-50 rounded-xl px-3 py-2.5 flex-shrink-0">
         <p className="text-xs text-blue-700 font-medium leading-snug">⏱ Daily 3-hr schedule<br/><span className="font-normal text-blue-600">Learn 1.5h · Practice 1h · Review 30m</span></p>
       </div>
 
+      {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-0.5">
         {roadmapData.phases.map(phase=>{
           const ps=phaseStats(phase,progress);
@@ -462,7 +448,7 @@ function Sidebar({ activePhaseId, activeWeekId, onSelectWeek, progress, onReset 
                     const ws=weekStats(week,progress);
                     const isAct=activeWeekId===week.id;
                     return(
-                      <button key={week.id} onClick={()=>onSelectWeek(phase.id,week.id)}
+                      <button key={week.id} onClick={()=>{onSelectWeek(phase.id,week.id);onClose&&onClose();}}
                         className={`w-full text-left px-3 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-2
                           ${isAct?active:`text-gray-600 ${hover}`}`}>
                         <span className="flex-1 truncate">{week.label}</span>
@@ -480,13 +466,14 @@ function Sidebar({ activePhaseId, activeWeekId, onSelectWeek, progress, onReset 
         })}
       </nav>
 
-      <div className="px-4 py-4 border-t border-gray-100">
+      {/* Reset */}
+      <div className="px-4 py-4 border-t border-gray-100 flex-shrink-0">
         <button onClick={()=>window.confirm("Reset all progress? This can't be undone.")&&onReset()}
           className="w-full py-2 px-4 rounded-xl text-xs font-semibold text-gray-500 border border-gray-200 hover:border-red-200 hover:text-red-500 hover:bg-red-50 transition-all">
           Reset All Progress
         </button>
       </div>
-    </aside>
+    </>
   );
 }
 
@@ -495,28 +482,31 @@ function StatsBar({ phase, week, progress }) {
   const c=phase.color==="indigo"?"indigo":"emerald";
   function Card({label,pct,done,total,color}){
     return(
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-5 py-4 flex-1 min-w-0">
-        <div className="flex items-center justify-between mb-2"><span className="text-xs font-semibold text-gray-500 uppercase tracking-wider truncate">{label}</span><span className="text-xl font-bold text-gray-900 tabular-nums ml-2">{pct}%</span></div>
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-3.5 flex-1 min-w-0">
+        <div className="flex items-center justify-between mb-2"><span className="text-xs font-semibold text-gray-500 uppercase tracking-wider truncate">{label}</span><span className="text-lg font-bold text-gray-900 tabular-nums ml-2">{pct}%</span></div>
         <ProgressBar pct={pct} color={color} size="md"/>
-        <p className="text-xs text-gray-400 mt-1.5 tabular-nums">{done} / {total} tasks</p>
+        <p className="text-xs text-gray-400 mt-1.5 tabular-nums">{done} / {total}</p>
       </div>
     );
   }
   return(
-    <div className="flex gap-3 flex-wrap">
+    <div className="flex gap-2 sm:gap-3">
       <Card label="This Week" pct={ws.pct} done={ws.done} total={ws.total} color={c}/>
       <Card label={phase.shortLabel} pct={ps.pct} done={ps.done} total={ps.total} color={c}/>
-      <Card label="Full Roadmap" pct={os.pct} done={os.done} total={os.total} color="amber"/>
+      <Card label="Roadmap" pct={os.pct} done={os.done} total={os.total} color="amber"/>
     </div>
   );
 }
 
+// ─── DASHBOARD ───────────────────────────────────────────────────
 function Dashboard() {
   const { progress, toggleTask, resetProgress } = useProgress();
   const [activePhaseId, setActivePhaseId] = useState("phase1");
   const [activeWeekId, setActiveWeekId] = useState("w1");
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   const activePhase = roadmapData.phases.find(p=>p.id===activePhaseId)||roadmapData.phases[0];
-  const activeWeek = activePhase.weeks.find(w=>w.id===activeWeekId)||activePhase.weeks[0];
+  const activeWeek  = activePhase.weeks.find(w=>w.id===activeWeekId)||activePhase.weeks[0];
 
   useEffect(()=>{ if(!activePhase.weeks.find(w=>w.id===activeWeekId)) setActiveWeekId(activePhase.weeks[0].id); },[activePhaseId]);
 
@@ -526,30 +516,83 @@ function Dashboard() {
     if(next) setActiveWeekId(next.id);
   };
 
-  return(
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
-      <Sidebar activePhaseId={activePhaseId} activeWeekId={activeWeekId} onSelectWeek={(p,w)=>{setActivePhaseId(p);setActiveWeekId(w);}} progress={progress} onReset={resetProgress}/>
-      <main className="flex-1 overflow-y-auto">
-        <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+  const sidebarProps = {
+    activePhaseId, activeWeekId,
+    onSelectWeek:(p,w)=>{setActivePhaseId(p);setActiveWeekId(w);},
+    progress, onReset:resetProgress,
+  };
+
+  return (
+    // KEY FIX: use min-h-screen instead of h-screen to eliminate extra scroll,
+    // and let the page scroll naturally rather than using overflow-hidden + inner scroll
+    <div className="flex min-h-screen bg-gray-50">
+
+      {/* Desktop sidebar — sticky, natural height */}
+      <aside className="hidden lg:flex flex-col w-[272px] flex-shrink-0 bg-white border-r border-gray-100 sticky top-0 h-screen overflow-hidden">
+        <SidebarContent {...sidebarProps}/>
+      </aside>
+
+      {/* Mobile drawer */}
+      <MobileDrawer open={drawerOpen} onClose={()=>setDrawerOpen(false)}>
+        <SidebarContent {...sidebarProps} onClose={()=>setDrawerOpen(false)}/>
+      </MobileDrawer>
+
+      {/* Main content — scrolls naturally with the page */}
+      <main className="flex-1 min-w-0">
+
+        {/* Mobile top bar */}
+        <div className="lg:hidden sticky top-0 z-40 bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3">
+          <button onClick={()=>setDrawerOpen(true)}
+            className="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors flex-shrink-0">
+            <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0">
+              <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            </div>
+            <span className="text-sm font-bold text-gray-900 truncate">DataPath</span>
+          </div>
+          {/* Mobile nav arrows */}
+          <div className="flex items-center gap-1 flex-shrink-0">
+            <button onClick={()=>goWeek(-1)} className="w-8 h-8 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center transition-colors">
+              <svg className="w-3.5 h-3.5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button onClick={()=>goWeek(1)} className="w-8 h-8 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center transition-colors">
+              <svg className="w-3.5 h-3.5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Page content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-5 sm:space-y-6">
+
+          {/* Header row */}
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                <span className={`text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${activePhase.color==="indigo"?"bg-indigo-100 text-indigo-600":"bg-emerald-100 text-emerald-600"}`}>{activePhase.label}</span>
+                <span className={`text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full
+                  ${activePhase.color==="indigo"?"bg-indigo-100 text-indigo-600":"bg-emerald-100 text-emerald-600"}`}>{activePhase.label}</span>
                 <span className="text-xs text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">{activePhase.duration}</span>
-                <span className="text-xs text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">⏱ max 3 hrs/day</span>
+                <span className="hidden sm:inline text-xs text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">⏱ max 3 hrs/day</span>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">{activeWeek.label}</h2>
-              <p className="text-sm text-gray-500 mt-0.5">7 days · {activeWeek.days.reduce((a,d)=>a+d.tasks.length,0)} tasks · Mon–Fri study · Sat build · Sun rest</p>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{activeWeek.label}</h2>
+              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">7 days · {activeWeek.days.reduce((a,d)=>a+d.tasks.length,0)} tasks · Mon–Fri study · Sat build · Sun rest</p>
             </div>
-            <div className="flex items-center gap-2">
+            {/* Desktop nav arrows */}
+            <div className="hidden lg:flex items-center gap-2">
               <button onClick={()=>goWeek(-1)} className="w-9 h-9 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center shadow-sm transition-colors"><svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7"/></svg></button>
               <button onClick={()=>goWeek(1)} className="w-9 h-9 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 flex items-center justify-center shadow-sm transition-colors"><svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7"/></svg></button>
             </div>
           </div>
+
+          {/* Stats */}
           <StatsBar phase={activePhase} week={activeWeek} progress={progress}/>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+
+          {/* Day cards grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4">
             {activeWeek.days.map(d=><DayCard key={d.dayNum} day={d} progress={progress} toggleTask={toggleTask}/>)}
           </div>
+
         </div>
       </main>
     </div>
@@ -557,15 +600,3 @@ function Dashboard() {
 }
 
 export default function App() { return <Dashboard/>; }
-
-/*
- * HOW TO RUN:
- * 1. npm create vite@latest roadmap-tracker -- --template react
- * 2. cd roadmap-tracker && npm install
- * 3. npm install --save-dev tailwindcss@3 postcss autoprefixer
- * 4. npx tailwindcss init -p
- * 5. tailwind.config.js → content: ["./index.html","./src/** /*.{js,ts,jsx,tsx}"]
- * 6. src/index.css → @tailwind base; @tailwind components; @tailwind utilities;
- * 7. Replace src/App.jsx with this file
- * 8. npm run dev → http://localhost:5173
- */
